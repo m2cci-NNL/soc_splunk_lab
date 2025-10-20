@@ -15,7 +15,7 @@ jobs:
       - name: Build artifact
         run: tar -czf soc_lab_app.tgz soc_lab_app
 
-      - name: Pack app
+      - name: Pack app for local deployment
         run: tar -czf /tmp/soc_lab_app.tgz soc_lab_app
 
       - name: Deploy locally
