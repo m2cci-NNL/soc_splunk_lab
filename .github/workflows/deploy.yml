@@ -32,29 +32,17 @@ jobs:
           sudo find "$SPLUNK_HOME/etc/apps/soc_lab" -maxdepth 4 -type f \
             \( -path "*/default/app.conf" -o -path "*/default/data/ui/nav/*" -o -path "*/default/data/ui/views/*" \) -print
           echo "=== app.conf ==="
+
+      - name: Fix ownership and perms
+        env: SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
+        run: |
+          sudo chown -R splunk:splunk "$SPLUNK_HOME"
+          sudo find "$SPLUNK_HOME" -type d -exec chmod 755 {} \;
+          sudo find "$SPLUNK_HOME" -type f -exec chmod 644 {} \; || true
+          sudo chmod 700 "$SPLUNK_HOME/etc" "$SPLUNK_HOME/var" "$SPLUNK_HOME/var/run" || true
     
       # Redémarre Splunk proprement, puis vérifie nav et vues
-      - name: Restart via systemctl with clean env
-        env:
-          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
-          SPLUNK_USERNAME: ${{ secrets.SPLUNK_USERNAME }}
-          SPLUNK_PASSWORD: ${{ secrets.SPLUNK_PASSWORD }}
+      - name: Restart Splunk (no systemctl, no LD_ pollution)
+        env: SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
         run: |
-          set -e
-          echo "→ Restart Splunk service (clean environment)"
-           sudo -u splunk "$SPLUNK_HOME/bin/splunk" restart --answer-yes --no-prompt || \
-           "$SPLUNK_HOME/bin/splunk" restart --answer-yes --no-prompt
-
-
-          sudo -E -u splunk "$SPLUNK_HOME/bin/splunk" btool check --debug || true
-          echo "→ Health check on management API (8089)"
-          for i in {1..30}; do
-            if curl -sk -u "$SPLUNK_USERNAME:$SPLUNK_PASSWORD" https://127.0.0.1:8089/services/server/info >/dev/null; then
-              echo "Splunkd API OK ✅"
-              exit 0
-            fi
-            echo "Waiting for Splunkd (try $i/30)..."
-            sleep 5
-          done
-          echo "❌ ERROR: Splunkd API not responding after 150s"
-          exit 1
+          sudo -u splunk bash -lc 'unset LD_LIBRARY_PATH LD_PRELOAD; "$SPLUNK_HOME/bin/splunk" restart --answer-yes --no-prompt'
