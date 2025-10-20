@@ -1,0 +1,18 @@
+[default]
+access = read : [ * ], write : [ admin ]
+export = system
+
+[macros]
+export = system
+[props]
+export = system
+[transforms]
+export = system
+[lookups]
+export = system
+[eventtypes]
+export = system
+[tags]
+export = system
+[datamodels]
+export = system
