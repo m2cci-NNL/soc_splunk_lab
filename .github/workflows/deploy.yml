@@ -12,22 +12,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build artifact
-        run: tar -czf soc_lab_app.tgz soc_lab_app
+      # Pack UNIQUEMENT l'app: soc_lab_app/etc/apps/soc_lab
+      - name: Pack app
+        run: |
+          tar -czf soc_lab.tgz -C soc_lab_app/etc/apps soc_lab
+          ls -l soc_lab.tgz
 
-      - name: Pack app for local deployment
-        run: tar -czf /tmp/soc_lab_app.tgz soc_lab_app
-
-      - name: Deploy locally
+      # Déploiement local vers $SPLUNK_HOME/etc/apps/soc_lab/
+      - name: Deploy to $SPLUNK_HOME
         env:
           SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
           APP_NAME: ${{ secrets.REMOTE_APP_NAME || 'soc_lab' }}
         run: |
           set -e
-          sudo mkdir -p "$SPLUNK_HOME/etc/apps/$APP_NAME"
-          sudo tar -xzf /tmp/soc_lab_app.tgz -C "$SPLUNK_HOME/etc/apps/$APP_NAME" --strip-components=1
-          sudo find "$SPLUNK_HOME/etc/apps/$APP_NAME" -type f -maxdepth 2 -print | head -n 20
-
+          sudo mkdir -p "$SPLUNK_HOME/etc/apps"
+          sudo tar -xzf soc_lab.tgz -C "$SPLUNK_HOME/etc/apps"
+          sudo chown -R splunk:splunk "$SPLUNK_HOME/etc/apps/soc_lab" || true
+          echo "=== Tree ==="
+          sudo find "$SPLUNK_HOME/etc/apps/soc_lab" -maxdepth 4 -type f \
+            \( -path "*/default/app.conf" -o -path "*/default/data/ui/nav/*" -o -path "*/default/data/ui/views/*" \) -print
+          echo "=== app.conf ==="
+    
+      # Redémarre Splunk proprement, puis vérifie nav et vues
       - name: Restart via systemctl with clean env
         run: |
           set -e
