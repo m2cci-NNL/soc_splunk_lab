@@ -28,14 +28,16 @@ jobs:
           sudo chown -R splunk:splunk "$SPLUNK_HOME/etc/apps/soc_lab"
 
       - name: Fix perms for executables ONLY
-        env: { SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} }
+        env:
+           SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
         run: |
           sudo chown -R splunk:splunk "$SPLUNK_HOME"
           sudo chmod 755 "$SPLUNK_HOME/bin/splunk" "$SPLUNK_HOME/bin/splunkd"
           sudo find "$SPLUNK_HOME/bin" -maxdepth 1 -type f -exec chmod 755 {} \; || true
 
       - name: Restart Splunk (no systemctl)
-        env: { SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} }
+        env: 
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
         run: |
           sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' restart --answer-yes --no-prompt"
           sudo -u splunk bash -lc "'${SPLUNK_HOME}/bin/splunk' btool nav list --app=soc_lab --debug | head || true"
