@@ -34,5 +34,8 @@ jobs:
           SPLUNK_USERNAME: ${{ secrets.SPLUNK_USERNAME }}
           SPLUNK_PASSWORD: ${{ secrets.SPLUNK_PASSWORD }}
         run: |
+          set -e
+          command -v splunk || true
+          /opt/splunk/bin/splunk version
           sudo "$SPLUNK_HOME/bin/splunk" restart -auth "$SPLUNK_USERNAME:$SPLUNK_PASSWORD"
           sudo "$SPLUNK_HOME/bin/splunk" status
