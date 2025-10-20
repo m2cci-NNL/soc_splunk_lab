@@ -28,14 +28,9 @@ jobs:
           sudo tar -xzf /tmp/soc_lab_app.tgz -C "$SPLUNK_HOME/etc/apps/$APP_NAME" --strip-components=1
           sudo find "$SPLUNK_HOME/etc/apps/$APP_NAME" -type f -maxdepth 2 -print | head -n 20
 
-      - name: Restart Splunk
-        env:
-          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
-          SPLUNK_USERNAME: ${{ secrets.SPLUNK_USERNAME }}
-          SPLUNK_PASSWORD: ${{ secrets.SPLUNK_PASSWORD }}
+      - name: Restart via systemctl with clean env
         run: |
           set -e
-          command -v splunk || true
           /opt/splunk/bin/splunk version
-          sudo "$SPLUNK_HOME/bin/splunk" restart -auth "$SPLUNK_USERNAME:$SPLUNK_PASSWORD"
-          sudo "$SPLUNK_HOME/bin/splunk" status
+          sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl restart splunk || sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl restart Splunkd
+          sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl status splunk || sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl status Splunkd
