@@ -22,15 +22,13 @@ jobs:
       - name: Deploy to $SPLUNK_HOME
         env:
           SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
-          APP_NAME: ${{ secrets.REMOTE_APP_NAME || 'soc_lab' }}
         run: |
           set -e
           sudo mkdir -p "$SPLUNK_HOME/etc/apps"
           sudo tar -xzf soc_lab.tgz -C "$SPLUNK_HOME/etc/apps"
           sudo chown -R splunk:splunk "$SPLUNK_HOME/etc/apps/soc_lab" || true
           echo "=== Tree ==="
-          sudo find "$SPLUNK_HOME/etc/apps/soc_lab" -maxdepth 4 -type f \
-            \( -path "*/default/app.conf" -o -path "*/default/data/ui/nav/*" -o -path "*/default/data/ui/views/*" \) -print
+          sudo find "$SPLUNK_HOME/etc/apps/soc_lab/default" -type f | head -n 30
           echo "=== app.conf ==="
 
       - name: Fix ownership and perms
@@ -42,7 +40,13 @@ jobs:
           sudo chmod 700 "$SPLUNK_HOME/etc" "$SPLUNK_HOME/var" "$SPLUNK_HOME/var/run" || true
     
       # Redémarre Splunk proprement, puis vérifie nav et vues
-      - name: Restart Splunk (no systemctl, no LD_ pollution)
-        env: SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
+      - name: Restart Splunk (no systemctl)
+        env:
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
         run: |
+          set -e
+          echo "→ Restarting Splunk without systemctl"
           sudo -u splunk bash -lc 'unset LD_LIBRARY_PATH LD_PRELOAD; "$SPLUNK_HOME/bin/splunk" restart --answer-yes --no-prompt'
+          echo "→ Checking app registration"
+          sudo -u splunk bash -lc '"$SPLUNK_HOME/bin/splunk" btool app list --app=soc_lab --debug | grep -i default_view || true'
+          sudo -u splunk bash -lc '"$SPLUNK_HOME/bin/splunk" btool nav list --app=soc_lab --debug | head || true'
