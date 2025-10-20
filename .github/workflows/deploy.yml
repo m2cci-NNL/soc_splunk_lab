@@ -43,14 +43,11 @@ jobs:
       # Redémarre Splunk proprement, puis vérifie nav et vues
       - name: Restart Splunk (no systemctl)
         env:
-          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}   # ex: /opt/splunk
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
         run: |
           set -e
-          echo "SPLUNK_HOME=$SPLUNK_HOME"
-        # Vérifs rapides
-         sudo -u splunk bash -lc "ls -ld '${SPLUNK_HOME}' '${SPLUNK_HOME}/bin/splunk'"
-        # Restart propre
-         sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' restart --answer-yes --no-prompt"
-        # Sanity checks
-         sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' btool app list --app=soc_lab --debug | grep -i default_view || true"
-         sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' btool nav list --app=soc_lab --debug | head || true"
+          echo "SPLUNK_HOME=$SPLUNK_HOME"        
+          sudo -u splunk bash -lc "ls -ld '${SPLUNK_HOME}' '${SPLUNK_HOME}/bin/splunk'"
+          sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' restart --answer-yes --no-prompt"
+          sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' btool app list --app=soc_lab --debug | grep -i default_view || true"
+          sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' btool nav list --app=soc_lab --debug | head || true"
