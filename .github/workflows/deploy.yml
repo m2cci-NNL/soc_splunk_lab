@@ -35,21 +35,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            ls -l /tmp/remote_install.sh || exit 1
-            ls -lh /tmp/soc_lab_app.tgz || exit 1
-          
-      - name: Run remote preflight + deploy + restart + healthcheck
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || '22' }}
-          script_stop: true
-          envs: REMOTE_SPLUNK_HOME,REMOTE_APP_NAME,USE_SYSTEMCTL,HEALTH_TIMEOUT,SPLUNK_USERNAME,SPLUNK_PASSWORD
-          script: |
+            ls -l /tmp/remote_install.sh /tmp/soc_lab_app.tgz
             chmod +x /tmp/remote_install.sh
             /tmp/remote_install.sh
+         
         env:
           REMOTE_SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
           REMOTE_APP_NAME: ${{ secrets.REMOTE_APP_NAME || 'soc_lab' }}
