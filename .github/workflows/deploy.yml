@@ -30,7 +30,6 @@ jobs:
 
       - name: Restart via systemctl with clean env
         run: |
-          shell: bash {0} 
           set -e
           echo "→ Restart Splunk service (clean environment)"
           /opt/splunk/bin/splunk version
