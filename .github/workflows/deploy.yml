@@ -22,7 +22,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
-          source: "soc_lab_app.tgz , scripts/remote_install.sh"
+          source: "soc_lab_app.tgz"
           target: "/tmp"
           overwrite: true
           tar_tmp_path: ""
