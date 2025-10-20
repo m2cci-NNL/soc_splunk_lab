@@ -32,7 +32,8 @@ jobs:
           echo "=== app.conf ==="
 
       - name: Fix ownership and perms
-        env: SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
+        env: 
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
         run: |
           sudo chown -R splunk:splunk "$SPLUNK_HOME"
           sudo find "$SPLUNK_HOME" -type d -exec chmod 755 {} \;
