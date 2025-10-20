@@ -35,13 +35,17 @@ jobs:
     
       # Redémarre Splunk proprement, puis vérifie nav et vues
       - name: Restart via systemctl with clean env
+        env:
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
+          SPLUNK_USERNAME: ${{ secrets.SPLUNK_USERNAME }}
+          SPLUNK_PASSWORD: ${{ secrets.SPLUNK_PASSWORD }}
         run: |
           set -e
           echo "→ Restart Splunk service (clean environment)"
-          /opt/splunk/bin/splunk version
-          sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl restart splunk || sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl restart Splunkd
-          sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl status splunk || sudo env -i PATH=/usr/sbin:/usr/bin:/bin /bin/systemctl status Splunkd
-          echo "→ Run btool check for syntax issues"
+           sudo -u splunk "$SPLUNK_HOME/bin/splunk" restart --answer-yes --no-prompt || \
+           "$SPLUNK_HOME/bin/splunk" restart --answer-yes --no-prompt
+
+
           sudo -E -u splunk "$SPLUNK_HOME/bin/splunk" btool check --debug || true
           echo "→ Health check on management API (8089)"
           for i in {1..30}; do
