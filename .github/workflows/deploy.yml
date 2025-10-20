@@ -1,6 +1,8 @@
 name: Deploy Splunk App
+
 on:
-  push: { branches: [ "main" ] }
+  push:
+    branches: [ "main" ]
   workflow_dispatch: {}
 
 jobs:
@@ -13,46 +15,23 @@ jobs:
       - name: Build artifact
         run: tar -czf soc_lab_app.tgz soc_lab_app
 
-      - name: Copy artifact to remote
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || '22' }}
-          target: "/tmp"
-          overwrite: true
-          tar_tmp_path: ""
-          source: |
-            soc_lab_app.tgz
-            scripts/remote_install.sh
+      - name: Pack app
+        run: tar -czf /tmp/soc_lab_app.tgz soc_lab_app
 
-      - name: Verify copy
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || '22' }}
-          script: |
-            ls -l /tmp/remote_install.sh /tmp/soc_lab_app.tgz
-
-      - name: Run remote preflight + deploy + restart + healthcheck
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Deploy locally
         env:
-          REMOTE_SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
-          REMOTE_APP_NAME: ${{ secrets.REMOTE_APP_NAME || 'soc_lab' }}
-          USE_SYSTEMCTL: ${{ secrets.USE_SYSTEMCTL || '1' }}
-          HEALTH_TIMEOUT: ${{ secrets.HEALTH_TIMEOUT || '120' }}
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
+          APP_NAME: ${{ secrets.REMOTE_APP_NAME || 'soc_lab' }}
+        run: |
+          set -e
+          sudo mkdir -p "$SPLUNK_HOME/etc/apps/$APP_NAME"
+          sudo tar -xzf /tmp/soc_lab_app.tgz -C "$SPLUNK_HOME/etc/apps/$APP_NAME" --strip-components=1
+
+      - name: Restart Splunk
+        env:
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
           SPLUNK_USERNAME: ${{ secrets.SPLUNK_USERNAME }}
           SPLUNK_PASSWORD: ${{ secrets.SPLUNK_PASSWORD }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || '22' }}
-          script_stop: true
-          envs: REMOTE_SPLUNK_HOME,REMOTE_APP_NAME,USE_SYSTEMCTL,HEALTH_TIMEOUT,SPLUNK_USERNAME,SPLUNK_PASSWORD
-          script: |
-            chmod +x /tmp/remote_install.sh
-            /tmp/remote_install.sh
+        run: |
+          "$SPLUNK_HOME/bin/splunk" restart -auth "$SPLUNK_USERNAME:$SPLUNK_PASSWORD"
+          "$SPLUNK_HOME/bin/splunk" status
