@@ -18,36 +18,25 @@ jobs:
           tar -czf soc_lab.tgz -C soc_lab_app/etc/apps soc_lab
           ls -l soc_lab.tgz
 
-      # Déploiement local vers $SPLUNK_HOME/etc/apps/soc_lab/
       - name: Deploy to $SPLUNK_HOME
-        env:
-          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }}
+        env: 
+          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
         run: |
           set -e
           sudo mkdir -p "$SPLUNK_HOME/etc/apps"
           sudo tar -xzf soc_lab.tgz -C "$SPLUNK_HOME/etc/apps"
-          sudo chown -R splunk:splunk "$SPLUNK_HOME/etc/apps/soc_lab" || true
-          echo "=== Tree ==="
-          sudo find "$SPLUNK_HOME/etc/apps/soc_lab/default" -type f | head -n 30
-          echo "=== app.conf ==="
+          sudo chown -R splunk:splunk "$SPLUNK_HOME/etc/apps/soc_lab"
 
-      - name: Fix ownership and perms
-        env: 
-          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
+      - name: Fix perms for executables ONLY
+        env: { SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} }
         run: |
           sudo chown -R splunk:splunk "$SPLUNK_HOME"
-          sudo find "$SPLUNK_HOME" -type d -exec chmod 755 {} \;
-          sudo find "$SPLUNK_HOME" -type f -exec chmod 644 {} \; || true
-          sudo chmod 700 "$SPLUNK_HOME/etc" "$SPLUNK_HOME/var" "$SPLUNK_HOME/var/run" || true
-    
-      # Redémarre Splunk proprement, puis vérifie nav et vues
+          sudo chmod 755 "$SPLUNK_HOME/bin/splunk" "$SPLUNK_HOME/bin/splunkd"
+          sudo find "$SPLUNK_HOME/bin" -maxdepth 1 -type f -exec chmod 755 {} \; || true
+
       - name: Restart Splunk (no systemctl)
-        env:
-          SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
+        env: { SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} }
         run: |
-          set -e
-          echo "SPLUNK_HOME=$SPLUNK_HOME"        
-          sudo -u splunk bash -lc "ls -ld '${SPLUNK_HOME}' '${SPLUNK_HOME}/bin/splunk'"
           sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' restart --answer-yes --no-prompt"
-          sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' btool app list --app=soc_lab --debug | grep -i default_view || true"
-          sudo -u splunk bash -lc "unset LD_LIBRARY_PATH LD_PRELOAD; '${SPLUNK_HOME}/bin/splunk' btool nav list --app=soc_lab --debug | head || true"
+          sudo -u splunk bash -lc "'${SPLUNK_HOME}/bin/splunk' btool nav list --app=soc_lab --debug | head || true"
+          sudo -u splunk bash -lc "'${SPLUNK_HOME}/bin/splunk' btool app list --app=soc_lab --debug | grep -i default_view || true"
