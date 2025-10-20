@@ -1,0 +1,254 @@
+[]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 0.0
+
+[nav/default]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1619422587.0
+
+[views/armada_infrastructure_clone]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = admin
+version = 8.2.7
+modtime = 1677670968.0
+
+[views/e0494414_to_be_deleted]
+access = read : [ admin ], write : [ admin ]
+export = none
+owner = e0494414
+version = 8.2.7
+modtime = 1694500984.0
+
+[views/overview_clone]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1693832901.0
+
+[views/radha_application_performance_clone]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0552820
+version = 8.2.7
+modtime = 1672040902.0
+
+[views/sag_armada_application_performance_hl]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1679386947.0
+
+[views/sag_armada_infrastructure_hl]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1677670999.0
+
+[views/sag_armada_itsm_so_hl]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1688646517.0
+
+[views/sag_armada_monitoring_instances_hl]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1679386947.0
+
+[views/sag_armada_overview]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1693229233.0
+
+[lookups/armada_hl_users.csv]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1694433832.0
+
+[lookups/armada_list_servers.csv]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1694501164.0
+
+[lookups/incident_details_so_armada.csv]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1634018856.0
+
+[lookups/ITSM_ARMADA_HLD_INCIDENTS.csv]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1694501186.0
+
+
+[app/install/install_source_checksum]
+version = 8.2.7
+modtime = 1622762259.716156000
+
+[savedsearches/armada_wise_list_servers]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1634207409.860092000
+
+[savedsearches/armada_itsm_so]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = nobody
+version = 8.2.7
+modtime = 1624024150.785328000
+
+[savedsearches/armada_itsm_so_factory]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0451136
+version = 8.2.7
+modtime = 1632291494.173994000
+
+[savedsearches/gen_armada_list_servers]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = admin
+version = 8.2.7
+modtime = 1652369586.572745000
+
+[savedsearches/armada_dr_br_sharepoint_list]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0494414
+version = 8.2.7
+modtime = 1638194062.395834000
+
+[savedsearches/armada_hl_user_access]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = admin
+version = 8.2.7
+modtime = 1675418488.421704000
+
+[times/All%20History]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678344090.046232000
+
+[times/all_time]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678344090.055375000
+
+[times/previous_year]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678344728.663862000
+
+[times/real_time_all]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678344728.662728000
+
+[times/real_time_last1h]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678344818.344609000
+
+[times/real_time_last1m]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678345235.175413000
+
+[times/real_time_last5m]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678345235.173728000
+
+[times/real_time_last30m]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678345876.328298000
+
+[times/real_time_last30s]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678345999.581546000
+
+[times/real_time_menu]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678346016.736755000
+
+[times/settings]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = e0545861
+version = 8.2.7
+modtime = 1678346016.741696000
+
+[lookups/ITSM_ARMADA_HLD_CHANGE_REQUESTS.csv]
+version = 8.2.7
+modtime = 1693518926.948850000
+
+[savedsearches/ITSM_ARMADA_HLD_CHANGE_REQUESTS]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = admin
+version = 8.2.7
+modtime = 1692183623.162476000
+
+[savedsearches/ITSM_ARMADA_HLD_INCIDENTS]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = admin
+version = 8.2.7
+modtime = 1692183556.718583000
+
+[savedsearches/ITSM_ARMADA_HLD_PROBLEMS]
+access = read : [ admin, splunk_holistic_armada_users ], write : [ admin ]
+export = none
+owner = admin
+version = 8.2.7
+modtime = 1692183590.903514000
+

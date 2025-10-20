@@ -1,0 +1,24 @@
+<nav search_view="search">
+<collection label="OVERVIEW"> 
+  <view name="sag_armada_overview" default="true" />
+  
+  </collection>
+  <collection label="INFRASTRUCTURE"> 
+  <view name="sag_armada_infrastructure_hl"/>
+    
+   </collection>
+<collection label="DATABASE"> 
+
+     <view source="all" match="sag_armada_monitoring_instances_hl"/>
+    </collection>
+<collection label="APPLICATION PERFORMANCE"> 
+ 
+<view name="sag_armada_application_performance_hl"/>
+</collection>
+<collection label="ITSM"> 
+     
+   <view name="sag_armada_itsm_so_hl"/>
+</collection>
+ <!-- <view name="sag_wise_network_diagram_viz_h1"/>-->
+ </nav>
+

@@ -1,0 +1,823 @@
+<form version="1.1" hideExport="true">
+  <label>Overview</label>
+    <search>
+<query>| makeresults | eval name_app= if(like("$env:app$","%holistic%"),mvindex(split("$env:app$","_holistic"),0)."_hl",mvindex(split("$env:app$","_e2e"),0)."_e2e")</query>
+<progress>
+<set token="name_app">$result.name_app$</set>
+</progress>
+</search>
+  
+  <init>
+    <set token="word_infra">Loading...</set>
+    <set token="word_db">Loading...</set>
+    <set token="word_perf">Loading...</set>
+    <set token="word_itsm">Loading...</set>
+  </init>
+  <search>
+    <query>
+      
+      | inputlookup armada_list_servers.csv
+| stats first(status) as Status,first(icon_value) as icon_value,first(color_value) as color_value by Hostname
+| sort Hostname
+| eval Range=if(Status="Offline","Elevated","Low") 
+| stats values(Status) as Status
+    </query>
+    <progress>
+      <condition match="like('result.Status' ,&quot;Offline&quot;)">
+        <set token="icon_infra">icon_error.PNG</set>
+        <set token="color_infra">#FF0000;</set>
+        <set token="word_infra">ERROR</set>
+        <set token="size_infra">15.5%</set>
+      </condition>
+      <condition match="like('result.Status' ,&quot;Online&quot;)">
+        <set token="icon_infra">icon_healthy.PNG</set>
+        <set token="color_infra">#8aa86d;</set>
+        <set token="word_infra">HEALTHY</set>
+        <set token="size_infra">21.5%</set>
+      </condition>
+    </progress>
+  </search>
+  <search>
+    <query>
+      
+   index=sag_database_normal O1P18698DG1 sourcetype="database:oracle:failed_jobs" 
+| stats sum(FAILURE_COUNT) as Failure by INSTANCE_NAME 
+| eval status=if(Failure=0,"success","failed")
+| fields status
+    </query>
+    <progress>
+      <condition match="NOT like('result.status' ,&quot;success&quot;)">
+        <set token="icon_db">icon_error.PNG</set>
+        <set token="color_db">#FF0000;</set>
+        <set token="word_db">ERROR</set>
+        <set token="size_db">15.5%</set>
+      </condition>
+      <condition match="like('result.status' ,&quot;success&quot;)">
+        <set token="icon_db">icon_healthy.PNG</set>
+        <set token="color_db">#8aa86d;</set>
+        <set token="word_db">HEALTHY</set>
+        <set token="size_db">21.5%</set>
+      </condition>
+    </progress>
+  </search>
+  <search>
+    <query>
+index=sag_common_hpbsm NAME_APPLICATION="armada"  AVAILABILITY="0"
+|  stats latest(AVAILABILITY) as AVAILABILITY, latest(RESPONSE_TIME) as RESPONSE_TIME by NAME_APPLICATION, NAME_BTF, NAME_LOCATION,NAME_TRANSACTION
+|  rename NME_BTF as "Business process", NAME_TRANSACTION as "Transaction name"
+ | stats count    | eval status=if( count=0, "check","Failed") , color = if( count=0, "#53a051","#dc4e41") | table status
+ | stats values(status) as status
+    </query>
+    <earliest>$timepicker.earliest$</earliest>
+    <latest>$timepicker.latest$</latest>
+    <progress>
+      <condition match="like('result.status' ,&quot;%Failed%&quot;)">
+        <set token="icon_perf">icon_error.PNG</set>
+        <set token="color_perf">#FF0000;</set>
+        <set token="word_perf">ERROR</set>
+        <set token="size_perf">15.5%</set>
+      </condition>
+      <condition match="NOT like('result.status' ,&quot;%Failed%&quot;)">
+        <set token="icon_perf">icon_healthy.PNG</set>
+        <set token="color_perf">#8aa86d;</set>
+        <set token="word_perf">HEALTHY</set>
+        <set token="size_perf">21.5%</set>
+      </condition>
+    </progress>
+  </search>
+  <search>
+    <query>
+|inputlookup incident_details_so|dedup modification_time,number  | search "Service Offering"="armada" 
+| search status!="Closed" AND status!="Resolved"
+| eval count=0
+ | stats dc(number) as count
+    </query>
+    <progress>
+      <condition match="'result.count' &gt;0">
+        <set token="icon_itsm">icon_error.PNG</set>
+        <set token="color_itsm">#FF0000;</set>
+        <set token="word_itsm">ERROR</set>
+        <set token="size_itsm">15.5%</set>
+      </condition>
+      <condition match="like('result.count' ,&quot;0&quot;)">
+        <set token="icon_itsm">icon_healthy.PNG</set>
+        <set token="color_itsm">#8aa86d;</set>
+        <set token="word_itsm">HEALTHY</set>
+        <set token="size_itsm">21.5%</set>
+      </condition>
+    </progress>
+  </search>
+  <fieldset submitButton="false"></fieldset>
+ <row id="row2">
+    <panel ref="panel_hl_e2e_user_access"></panel>
+  </row>
+  <row id="row1">
+    <panel id="panel4">
+      <title>Applications Service Continuity Indicators : Disaster Recovery Tracking</title>
+      <single>
+        <title>DR: Disaster recovery / BR: Backup recovery</title>
+        <search>
+          <query>| savedsearch armada_dr_br_sharepoint_list</query>
+          <earliest>-30d@d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">149</option>
+        <option name="link.visible">0</option>
+        <option name="rangeColors">["0x799eb2","0x799eb2"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">1</option>
+        <option name="trellis.size">small</option>
+        <option name="useColors">1</option>
+      </single>
+      <html>
+            <style>
+              /* To change gray body color at the bottom of the dashboard */
+              body {
+              background-color: white !important;
+                  }
+
+              /* To hide ... button*/
+            
+        .dashboard-header .dashboard-menu .edit-other {
+	          display:none !important;
+             } 
+             
+             .icon-warning-sign{
+    display : none !important;
+}
+             
+        /****** CSS for DR - BR ******/ 
+        .dashboard-panel .fieldset {
+    padding: 0px 0px 0px 12px;
+    margin-bottom: 0;
+    
+}
+#panel4 h3 {z-index: 3; top: 120px; position: relative;}
+
+#panel4 [data-view="views/dashboard/element/Header"] { background-color:white ; height:2px; }
+ 
+ #panel4 h2.panel-title 
+{  text-align: center !important; 
+font-weight: bold;
+color: #4086aa;
+
+
+}
+.panel-body 
+{padding: 0px !important;}
+#row1 {
+width:90% !important;
+padding-left:50px;
+}
+#panel4 .viz-panel{
+
+width:8% !important;
+
+}
+
+#panel4 {
+
+
+border-radius:10px;
+border:3px dashed #799eb2 ; margin-bottom:2%;
+}
+
+
+
+.viz-controller.facets-mode-active .facets-container {
+   width: 195% !important;
+  
+}
+
+.facets-mode-active .action-bar {
+display: none !important;
+margin-right: 18px;
+}
+
+
+ #panelinput .dashboard-panel  {
+background: #F2F4F5!important;
+margin-top:-20% !important; 
+          }
+          
+
+.hide-label .hide-global-filters {
+ padding-top: 0px;
+display: none;
+ }
+          
+.facets-container {
+background-color: #C7EBF6; 
+}
+
+  .single-value .single-result {
+     font-size: 130% !important;
+x=0;
+ 
+ }
+
+
+
+svg.svg-container { height : 200px; 
+ width: 100% !important;
+
+ }
+
+.facet-label { font-size: 18px !important; color: Black ; }
+
+
+.view-mode #panel4 .element-footer  {
+             display: none !important;
+            }
+
+.single-result { x=0 !important;  x=0;/*fill:  #4086aa !important;*/}
+
+
+rect.block-background { fill: #4086aa !important;}
+
+/******CSS for the table LAST USERS******/
+#row2 { border: #e8dcca solid; width: 30%; float: right;margin-bottom:1%;background-color:#e8dcca;margin-right:2%; z-index:2 !important;margin-top:0%; }
+#row2 .table {background-color: #e9dcc9 !important;
+color: #7c795d; font-family: 'Trocchi', serif; font-size: 100%; font-weight: normal; line-height: 48px; margin: 0; z-index:2 !important; }
+#row2 .table .shared-resultstable-resultstableheader {display:none; z-index:2 !important; }
+#row2 .panel-body.html {display:none; z-index:2 !important; }
+
+.menus { display:none !important;}
+      </style>
+      </html>
+    </panel>
+  </row>
+  <row id="tickets_snow">
+    <panel>
+      <input type="time" token="timepicker" searchWhenChanged="true">
+        <label>TimePicker</label>
+        <default>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
+      <html>
+      <style>
+        #tickets_snow .dashboard-panel {
+        background-color: #F2F4F5 !important;
+        }
+        #panel1.dashboard-cell.dashboard-layout-panel{
+               width: 30% !important;
+           }
+            #panel0.dashboard-cell.dashboard-layout-panel{
+               width: 22% !important;
+           }
+           #panel3.dashboard-cell.dashboard-layout-panel{
+               width: 21% !important;
+           }
+           
+           
+           
+          [data-view="views/shared/appbar/Button"] [data-role="label"] {
+            color: white;
+            font-size: 1rem;
+             font-weight: 500;
+            }
+          
+          [data-view="views/shared/Icon"][data-icon="triangleDownSmall"] {
+            color: white;
+            }
+        
+            h1.dashboard-title{
+          color: #19367c !important; }
+          
+           div[data-view="views/shared/appbar/Master"] {
+             background-color: white;
+             border-bottom: solid white;
+             border-top: solid white;
+             background-color:#19367c;
+             }
+             
+              [data-role="app-name"] {
+             color: white;
+            
+              font-weight: 1000;
+            }
+
+  [data-role="underline"] {
+            background-color: silver !important;
+            top: 34px;
+            }
+            i.icon-alert {
+            visibility: hidden;
+
+            }
+            .alert {
+            visibility: hidden;
+            }
+             
+
+
+div#panel2 {
+            margin-right: 5px ;}
+
+#panel2 .dashboard-panel.dashboardPanel---pages-enterprise---8-2-1---1UN1T {background-color:  white;}
+
+#table_url td:nth-child(1)
+{ 
+ padding:1%;
+ overflow-wrap: anywhere;
+}
+      </style>
+       <h1 style="text-align:center;font-size:210%;color:#515ba2;"> SERVICE KEY PERFORMANCE INDICATOR</h1>
+<!--First panel-->     
+<div style="float:left;width:23.5%;height:100%;border:2px dashed #8EC65C; background-color:white; border-radius:10px;">
+              <h2 style="text-align:center;font-weight:bold;">Overall Status of Infrastructure</h2>
+              <div style="text-align:center;font-size:200%;padding-top:20px;padding-bottom:20px;width:98%;margin:1%;font-weight: normal;background-color:white;color:  $color_infra$">
+            <img src="/static/app/armada_holistic_dashboard_sh/$icon_infra$" style="width: $size_infra$;padding-bottom: 1px;"/>  
+            <a href="/app/armada_holistic_dashboard_sh/sag_armada_infrastructure_hl?form.timepicker.earliest=-60m%40m&amp;form.timepicker.latest=now&amp;form.status=*&amp;form.hostname=*" target="_blank">
+           $word_infra$</a>
+              </div>
+            </div>
+            <div style="float:left;width:1%;">
+              <h3 style="text-align:center"/>
+            </div>
+<!--Second panel-->     
+<div style="float:left;width:24%;height:100%;border:2px dashed #8EC65C; background-color:white; border-radius:10px;">
+              <h2 style="text-align:center;font-weight:bold;">Overall Status of Database</h2>
+                <div style="text-align:center;font-size:200%;padding-top:20px;padding-bottom:20px;width:98%;margin:1%;font-weight: normal;background-color:white;color:$color_db$">
+            <img src="/static/app/armada_holistic_dashboard_sh/$icon_db$" style="width: $size_db$;padding-bottom: 1px;"/>  
+            <a href="/app/armada_holistic_dashboard_sh/sag_armada_monitoring_instances_hl?form.timepicker.earliest=-24h%40h&amp;form.timepicker.latest=now" target="_blank">
+           $word_db$</a>
+              </div>
+            </div>
+            <div style="float:left;width:1%;">
+              <h3 style="text-align:center"/>
+            </div>
+            <!--Third panel-->     
+<div style="float:left;width:24%;height:100%;border:2px dashed #8EC65C; background-color:white; border-radius:10px;">
+              <h2 style="text-align:center;font-weight:bold;">Overall Status of Application</h2>
+                <div style="text-align:center;font-size:200%;padding-top:20px;padding-bottom:20px;width:98%;margin:1%;font-weight: normal;background-color:white;color: $color_perf$">
+            <img src="/static/app/armada_holistic_dashboard_sh/$icon_perf$" style="width: $size_perf$;padding-bottom: 1px;"/>
+             <a href="/app/armada_holistic_dashboard_sh/sag_armada_application_performance_hl?form.field1.earliest=-24h%40h&amp;form.field1.latest=now" target="_blank">$word_perf$ </a>
+              </div>
+            </div>
+            <div style="float:left;width:1%;">
+              <h3 style="text-align:center"/>
+            </div>
+            <!--panel 4-->
+<div style="float:left;width:23%;height:100%;border:2px dashed #8EC65C; background-color:white; border-radius:10px;">
+              <h2 style="text-align:center;font-weight:bold;">Overall Status of ITSM</h2>
+                <div style="text-align:center;font-size:200%;padding-top:20px;padding-bottom:20px;width:98%;margin:1%;font-weight: normal;background-color:white;color: $color_itsm$">
+            <img src="/static/app/armada_holistic_dashboard_sh/$icon_itsm$" style="width: $size_itsm$;padding-bottom: 1px;"/>  
+            <a href="/app/armada_holistic_dashboard_sh/sag_armada_itsm_so_hl?form.text_token=*" target="_blank">
+           $word_itsm$</a>
+              </div>
+            </div>
+            <div style="float:left;width:1%;">
+              <h3 style="text-align:center"/>
+            </div>
+            </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="panel0">
+      <title>Infrastructure : (Hostname Status)</title>
+      <table>
+        <search>
+          <query>| inputlookup armada_list_servers.csv 
+| stats first(status) as Status,first(icon_value) as icon_value,first(color_value) as color_value by Hostname 
+| sort Hostname 
+| eval Range=if(Status="Offline","Elevated","Low") 
+| fields Status Hostname Status</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <format type="color" field="Status">
+          <colorPalette type="map">{"Offline":#DD0727,"Online":#008000}</colorPalette>
+        </format>
+      </table>
+    </panel>
+    <panel id="panel1">
+      <title>Database : Instance Status</title>
+      <viz type="status_indicator_app.status_indicator">
+        <search>
+          <query>index=sag_database_normal O1P18698DG1 sourcetype="database:oracle:failed_jobs" 
+| stats sum(FAILURE_COUNT) as Failure by INSTANCE_NAME 
+| eval Failure_Count=INSTANCE_NAME+" (".Failure.")" 
+| fields Failure_Count 
+| transpose 
+| fields - column 
+| rename "row 1" as Instance1 ,"row 2" as Instance2</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">63</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="status_indicator_app.status_indicator.colorBy">static_color</option>
+        <option name="status_indicator_app.status_indicator.fillTarget">text</option>
+        <option name="status_indicator_app.status_indicator.fixIcon">info-circle</option>
+        <option name="status_indicator_app.status_indicator.icon">fix_icon</option>
+        <option name="status_indicator_app.status_indicator.showOption">1</option>
+        <option name="status_indicator_app.status_indicator.staticColor">#f1813f</option>
+        <option name="status_indicator_app.status_indicator.useColors">true</option>
+        <option name="status_indicator_app.status_indicator.useThousandSeparator">true</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <drilldown>
+          <link target="_blank">search?q=index=sag_database_normal%20sourcetype=*oracle*InstanceStatus*%20O2P10896%20OR%20O2P10896DG2&amp;earliest=$timepicker.earliest$&amp;latest=$timepicker.latest$</link>
+        </drilldown>
+      </viz>
+      <chart>
+        <search>
+          <query>index=sag_database_normal sourcetype=*ProcessUsedPct* OR sourcetype=*SessionUsedPct* O1P18698DG1
+|timechart span=10m avg(Process_used_PCT) AS "% of process used" avg(Session_PCT) AS "% of active sessions" by INSTANCE_NAME limit=0</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="height">202</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <drilldown>
+          <link target="_blank">search?q=index=sag_database_normal%20sourcetype=*oracle*ListenerStatus*%20%20O2P10896%20OR%20O2P10896DG2&amp;earliest=$timepicker.earliest$&amp;latest=$timepicker.latest$</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel id="panel2">
+      <title>Application : Transaction OK/KO</title>
+      <!-- <viz type="status_indicator_app.status_indicator">
+        <title>Transactions Available (OK)</title>
+        <search>
+          <query>index=sag_common_hpbsm NAME_APPLICATION="Phenix All Modules"  AVAILABILITY="100"
+|  stats latest(AVAILABILITY) as AVAILABILITY, latest(RESPONSE_TIME) as RESPONSE_TIME by NAME_APPLICATION, NAME_BTF, NAME_LOCATION,NAME_TRANSACTION
+|  rename NME_BTF as "Business process", NAME_TRANSACTION as "Transaction name"
+ | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">110</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="status_indicator_app.status_indicator.colorBy">static_color</option>
+        <option name="status_indicator_app.status_indicator.fillTarget">background</option>
+        <option name="status_indicator_app.status_indicator.fixIcon">check</option>
+        <option name="status_indicator_app.status_indicator.icon">fix_icon</option>
+        <option name="status_indicator_app.status_indicator.precision">0</option>
+        <option name="status_indicator_app.status_indicator.showOption">1</option>
+        <option name="status_indicator_app.status_indicator.staticColor">#53a051</option>
+        <option name="status_indicator_app.status_indicator.useColors">true</option>
+        <option name="status_indicator_app.status_indicator.useThousandSeparator">true</option>
+      </viz>-->
+      <viz type="status_indicator_app.status_indicator">
+        <title>Transactions not Available (KO)</title>
+        <search>
+          <query>index=sag_common_hpbsm NAME_APPLICATION="armada"  AVAILABILITY="0"
+|  stats latest(AVAILABILITY) as AVAILABILITY, latest(RESPONSE_TIME) as RESPONSE_TIME by NAME_APPLICATION, NAME_BTF, NAME_LOCATION,NAME_TRANSACTION
+|  rename NME_BTF as "Business process", NAME_TRANSACTION as "Transaction name"
+ | stats count    | eval icon=if( count=0, "check","warning") , color = if( count=0, "#53a051","#dc4e41") | table count, icon, color</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">110</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="status_indicator_app.status_indicator.colorBy">field_value</option>
+        <option name="status_indicator_app.status_indicator.fillTarget">background</option>
+        <option name="status_indicator_app.status_indicator.fixIcon">warning</option>
+        <option name="status_indicator_app.status_indicator.icon">field_value</option>
+        <option name="status_indicator_app.status_indicator.precision">0</option>
+        <option name="status_indicator_app.status_indicator.showOption">1</option>
+        <option name="status_indicator_app.status_indicator.staticColor">#dc4e41</option>
+        <option name="status_indicator_app.status_indicator.useThousandSeparator">true</option>
+      </viz>
+    </panel>
+    <panel id="panel3">
+       <html depends="$search_incidents$">
+       <h4 style="margin: 60px 0 50px 10px; text-align: center; letter-spacing: 3px; ">$search_incidents$</h4>
+      </html>
+      <title>ITSM : Count Of Tickets ( Not Closed Or Not Resolved) By Priority For The Last 3 Month</title>
+      <viz type="number_display_viz.number_display_viz" rejects="$search_incidents$">
+        <title>🎫 Incidents Count For The Last 3 Month</title>
+        <search>
+          <done>
+            <condition match="'job.resultCount' &gt; 0">
+              <unset token="search_incidents"></unset>
+            </condition>
+            <condition>
+              <set token="search_incidents">✔️ No Incident Found</set>
+            </condition>
+          </done>
+          <query>|inputlookup ITSM_ARMADA_HLD_INCIDENTS.csv
+| dedup sys_updated_on,number 
+| search status!="Closed" AND status!="Resolved" 
+| stats dc(number) as count by priority
+| eval color=case(priority="1" , "#DC4E41" ,
+                  priority="2" , "#FCCE54" ,
+                  priority="3" ,"#A267D8" ,
+                  priority="4" ,"#ACA49E" ,
+                  priority="5" ,"#6C757D",
+                  priority="Total","#87C1FF",
+                  true(), "false") ,
+    priority = "priority: ".priority</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">141</option>
+        <option name="number_display_viz.number_display_viz.bordercolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.bordersize">2</option>
+        <option name="number_display_viz.number_display_viz.colorprimary">#000000</option>
+        <option name="number_display_viz.number_display_viz.colorprimarymode">auto</option>
+        <option name="number_display_viz.number_display_viz.colorsecondary">#000000</option>
+        <option name="number_display_viz.number_display_viz.colorsecondarymode">darker1</option>
+        <option name="number_display_viz.number_display_viz.max">100</option>
+        <option name="number_display_viz.number_display_viz.min">0</option>
+        <option name="number_display_viz.number_display_viz.nodatacolor">#0178c7</option>
+        <option name="number_display_viz.number_display_viz.padding">10</option>
+        <option name="number_display_viz.number_display_viz.pulserate">4</option>
+        <option name="number_display_viz.number_display_viz.shadowcolor">#F2F4F5</option>
+        <option name="number_display_viz.number_display_viz.shapebordercolor">#FFFFFF</option>
+        <option name="number_display_viz.number_display_viz.shapebordercolormode">static</option>
+        <option name="number_display_viz.number_display_viz.shapebordersize">1</option>
+        <option name="number_display_viz.number_display_viz.shapedropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.shapeshadow">yes</option>
+        <option name="number_display_viz.number_display_viz.shapetexture">solid</option>
+        <option name="number_display_viz.number_display_viz.sparkHeight">30</option>
+        <option name="number_display_viz.number_display_viz.sparkWidth">90</option>
+        <option name="number_display_viz.number_display_viz.sparkalign">5</option>
+        <option name="number_display_viz.number_display_viz.sparkalignv">70</option>
+        <option name="number_display_viz.number_display_viz.sparkcolorfill">#009DD9</option>
+        <option name="number_display_viz.number_display_viz.sparkcolorline">#0178c7</option>
+        <option name="number_display_viz.number_display_viz.sparkcolormodefill">auto</option>
+        <option name="number_display_viz.number_display_viz.sparkcolormodeline">auto</option>
+        <option name="number_display_viz.number_display_viz.sparkmin">0</option>
+        <option name="number_display_viz.number_display_viz.sparknulls">gaps</option>
+        <option name="number_display_viz.number_display_viz.sparkorder">bg</option>
+        <option name="number_display_viz.number_display_viz.sparkstyle">area</option>
+        <option name="number_display_viz.number_display_viz.spinnerspeedmax">20</option>
+        <option name="number_display_viz.number_display_viz.spinnerspeedmin">10</option>
+        <option name="number_display_viz.number_display_viz.style">s0</option>
+        <option name="number_display_viz.number_display_viz.subtitlealign">center</option>
+        <option name="number_display_viz.number_display_viz.subtitlealignv">70</option>
+        <option name="number_display_viz.number_display_viz.subtitlecolor">#5C6773</option>
+        <option name="number_display_viz.number_display_viz.subtitlecolormode">static</option>
+        <option name="number_display_viz.number_display_viz.subtitledrop">yes</option>
+        <option name="number_display_viz.number_display_viz.subtitledropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.subtitlesize">40</option>
+        <option name="number_display_viz.number_display_viz.textalign">center</option>
+        <option name="number_display_viz.number_display_viz.textalignv">50</option>
+        <option name="number_display_viz.number_display_viz.textcolor">#000000</option>
+        <option name="number_display_viz.number_display_viz.textdrop">yes</option>
+        <option name="number_display_viz.number_display_viz.textdropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.textduration">300</option>
+        <option name="number_display_viz.number_display_viz.textmode">static</option>
+        <option name="number_display_viz.number_display_viz.textprecision">1</option>
+        <option name="number_display_viz.number_display_viz.textsize">100</option>
+        <option name="number_display_viz.number_display_viz.textunitposition">after</option>
+        <option name="number_display_viz.number_display_viz.textunitsize">50</option>
+        <option name="number_display_viz.number_display_viz.thickness">50</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol1">#1a9035</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol2">#d16f18</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol3">#b22b32</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol4">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol5">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol6">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdsize">20</option>
+        <option name="number_display_viz.number_display_viz.thresholdval2">70</option>
+        <option name="number_display_viz.number_display_viz.thresholdval3">90</option>
+        <option name="number_display_viz.number_display_viz.titlealign">center</option>
+        <option name="number_display_viz.number_display_viz.titlealignv">30</option>
+        <option name="number_display_viz.number_display_viz.titlecolor">#5C6773</option>
+        <option name="number_display_viz.number_display_viz.titlecolormode">static</option>
+        <option name="number_display_viz.number_display_viz.titledrop">yes</option>
+        <option name="number_display_viz.number_display_viz.titledropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.titlesize">45</option>
+        <option name="refresh.display">progressbar</option>
+      </viz>
+      <html depends="$search_chg$">
+        <h4 style="margin: 60px 0 50px 10px; text-align: center; letter-spacing: 3px; ">$search_chg$</h4>
+      </html>
+      <viz type="number_display_viz.number_display_viz" rejects="$search_chg$">
+        <title>🎫 Change Request Count For The Last 3 Month</title>
+        <search>
+             <done>
+             
+            <condition match="'job.resultCount' &gt; 0">
+              <unset token="search_chg"></unset>
+            </condition>
+            <condition>
+              <set token="search_chg">✔️ No Change Request Found</set>
+            </condition>
+          </done>
+          <query>|inputlookup ITSM_ARMADA_HLD_CHANGE_REQUESTS.csv
+| dedup number  
+| stats latest(urgency) as urgency, latest(escalation) as escalation, latest(assignment_group_name) as assignment_group_name, latest(opened_at) as opened_at,latest(service_offering) as service_offering , latest(sys_updated_on) as modification_time, latest(short_description) as short_description, latest(status) as status, latest(state) as state , latest(cmdb_ci) as cmdb_ci, latest(priority) as priority , latest(sys_id) as snow_token  by number
+| search status!="Closed" AND status!="Resolved" 
+| eval service_offering="OeBS Pharmacie"
+| lookup SPLUNK_HOLISTIC_CI sys_id as cmdb_ci outputnew name
+| stats count by priority
+| eval color=case(priority="1" , "#DC4E41" ,
+                  priority="2" , "#FCCE54" ,
+                  priority="3" ,"#A267D8" ,
+                  priority="4" ,"#ACA49E" ,
+                  priority="5" ,"#6C757D",
+                  priority="Total","#87C1FF",
+                  true(),false ),
+       priority=case(priority="1" , "P 1" ,
+                  priority="2" , "P 2" ,
+                  priority="3" ,"P 3" ,
+                  priority="4" ,"P 4" ,
+                  true(), "Others")</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">141</option>
+        <option name="number_display_viz.number_display_viz.bordercolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.bordersize">2</option>
+        <option name="number_display_viz.number_display_viz.colorprimary">#000000</option>
+        <option name="number_display_viz.number_display_viz.colorprimarymode">auto</option>
+        <option name="number_display_viz.number_display_viz.colorsecondary">#000000</option>
+        <option name="number_display_viz.number_display_viz.colorsecondarymode">darker1</option>
+        <option name="number_display_viz.number_display_viz.max">100</option>
+        <option name="number_display_viz.number_display_viz.min">0</option>
+        <option name="number_display_viz.number_display_viz.nodatacolor">#0178c7</option>
+        <option name="number_display_viz.number_display_viz.padding">10</option>
+        <option name="number_display_viz.number_display_viz.pulserate">4</option>
+        <option name="number_display_viz.number_display_viz.shadowcolor">#F2F4F5</option>
+        <option name="number_display_viz.number_display_viz.shapebordercolor">#FFFFFF</option>
+        <option name="number_display_viz.number_display_viz.shapebordercolormode">static</option>
+        <option name="number_display_viz.number_display_viz.shapebordersize">1</option>
+        <option name="number_display_viz.number_display_viz.shapedropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.shapeshadow">yes</option>
+        <option name="number_display_viz.number_display_viz.shapetexture">solid</option>
+        <option name="number_display_viz.number_display_viz.sparkHeight">30</option>
+        <option name="number_display_viz.number_display_viz.sparkWidth">90</option>
+        <option name="number_display_viz.number_display_viz.sparkalign">5</option>
+        <option name="number_display_viz.number_display_viz.sparkalignv">70</option>
+        <option name="number_display_viz.number_display_viz.sparkcolorfill">#009DD9</option>
+        <option name="number_display_viz.number_display_viz.sparkcolorline">#0178c7</option>
+        <option name="number_display_viz.number_display_viz.sparkcolormodefill">auto</option>
+        <option name="number_display_viz.number_display_viz.sparkcolormodeline">auto</option>
+        <option name="number_display_viz.number_display_viz.sparkmin">0</option>
+        <option name="number_display_viz.number_display_viz.sparknulls">gaps</option>
+        <option name="number_display_viz.number_display_viz.sparkorder">bg</option>
+        <option name="number_display_viz.number_display_viz.sparkstyle">area</option>
+        <option name="number_display_viz.number_display_viz.spinnerspeedmax">20</option>
+        <option name="number_display_viz.number_display_viz.spinnerspeedmin">10</option>
+        <option name="number_display_viz.number_display_viz.style">s0</option>
+        <option name="number_display_viz.number_display_viz.subtitlealign">center</option>
+        <option name="number_display_viz.number_display_viz.subtitlealignv">70</option>
+        <option name="number_display_viz.number_display_viz.subtitlecolor">#5C6773</option>
+        <option name="number_display_viz.number_display_viz.subtitlecolormode">static</option>
+        <option name="number_display_viz.number_display_viz.subtitledrop">yes</option>
+        <option name="number_display_viz.number_display_viz.subtitledropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.subtitlesize">40</option>
+        <option name="number_display_viz.number_display_viz.textalign">center</option>
+        <option name="number_display_viz.number_display_viz.textalignv">50</option>
+        <option name="number_display_viz.number_display_viz.textcolor">#000000</option>
+        <option name="number_display_viz.number_display_viz.textdrop">yes</option>
+        <option name="number_display_viz.number_display_viz.textdropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.textduration">300</option>
+        <option name="number_display_viz.number_display_viz.textmode">static</option>
+        <option name="number_display_viz.number_display_viz.textprecision">1</option>
+        <option name="number_display_viz.number_display_viz.textsize">100</option>
+        <option name="number_display_viz.number_display_viz.textunitposition">after</option>
+        <option name="number_display_viz.number_display_viz.textunitsize">50</option>
+        <option name="number_display_viz.number_display_viz.thickness">50</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol1">#1a9035</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol2">#d16f18</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol3">#b22b32</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol4">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol5">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol6">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdsize">20</option>
+        <option name="number_display_viz.number_display_viz.thresholdval2">70</option>
+        <option name="number_display_viz.number_display_viz.thresholdval3">90</option>
+        <option name="number_display_viz.number_display_viz.titlealign">center</option>
+        <option name="number_display_viz.number_display_viz.titlealignv">30</option>
+        <option name="number_display_viz.number_display_viz.titlecolor">#5C6773</option>
+        <option name="number_display_viz.number_display_viz.titlecolormode">static</option>
+        <option name="number_display_viz.number_display_viz.titledrop">yes</option>
+        <option name="number_display_viz.number_display_viz.titledropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.titlesize">45</option>
+        <option name="refresh.display">progressbar</option>
+      </viz>
+     <html depends="$search_problems$">
+        <h4 style="margin: 60px 0 50px 10px; text-align: center; letter-spacing: 3px; ">$search_problems$</h4>
+      </html>
+      <viz type="number_display_viz.number_display_viz" rejects="$search_problems$">
+        <title>🎫 Problems  Count For The Last 3 Month</title>
+        <search>
+          <done>
+            <condition match="'job.resultCount' &gt; 0">
+              <unset token="search_problems"></unset>
+            </condition>
+            <condition>
+              <set token="search_problems">✔️ No Problem Found</set>
+            </condition>
+          </done>
+          <query>| inputlookup ITSM_ARMADA_HLD_PROBLEMS.csv 
+| dedup number
+| stats latest(urgency) as urgency, latest(escalation) as escalation, latest(assignment_group_name) as assignment_group_name, latest(opened_at) as opened_at,latest(service_offering) as service_offering , latest(sys_updated_on) as modification_time, latest(short_description) as short_description, latest(status) as status, latest(state) as state , latest(cmdb_ci) as cmdb_ci, latest(priority) as priority , latest(sys_id) as snow_token  by number
+| search status!="Closed" AND status!="Resolved" 
+| eval service_offering="sanetiq"
+| lookup SPLUNK_HOLISTIC_CI sys_id as cmdb_ci outputnew name| stats count by priority
+| eval color=case(priority="1" , "#DC4E41" ,
+                  priority="2" , "#FCCE54" ,
+                  priority="3" ,"#A267D8" ,
+                  priority="4" ,"#ACA49E" ,
+                  priority="5" ,"#6C757D",
+                  priority="Total","#87C1FF",
+                  true(),false ),
+       priority=case(priority="1" , "P 1" ,
+                  priority="2" , "P 2" ,
+                  priority="3" ,"P 3" ,
+                  priority="4" ,"P 4" ,
+                  true(), "Others")</query>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">141</option>
+        <option name="number_display_viz.number_display_viz.bordercolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.bordersize">2</option>
+        <option name="number_display_viz.number_display_viz.colorprimary">#000000</option>
+        <option name="number_display_viz.number_display_viz.colorprimarymode">auto</option>
+        <option name="number_display_viz.number_display_viz.colorsecondary">#000000</option>
+        <option name="number_display_viz.number_display_viz.colorsecondarymode">darker1</option>
+        <option name="number_display_viz.number_display_viz.max">100</option>
+        <option name="number_display_viz.number_display_viz.min">0</option>
+        <option name="number_display_viz.number_display_viz.nodatacolor">#0178c7</option>
+        <option name="number_display_viz.number_display_viz.padding">10</option>
+        <option name="number_display_viz.number_display_viz.pulserate">4</option>
+        <option name="number_display_viz.number_display_viz.shadowcolor">#F2F4F5</option>
+        <option name="number_display_viz.number_display_viz.shapebordercolor">#FFFFFF</option>
+        <option name="number_display_viz.number_display_viz.shapebordercolormode">static</option>
+        <option name="number_display_viz.number_display_viz.shapebordersize">1</option>
+        <option name="number_display_viz.number_display_viz.shapedropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.shapeshadow">yes</option>
+        <option name="number_display_viz.number_display_viz.shapetexture">solid</option>
+        <option name="number_display_viz.number_display_viz.sparkHeight">30</option>
+        <option name="number_display_viz.number_display_viz.sparkWidth">90</option>
+        <option name="number_display_viz.number_display_viz.sparkalign">5</option>
+        <option name="number_display_viz.number_display_viz.sparkalignv">70</option>
+        <option name="number_display_viz.number_display_viz.sparkcolorfill">#009DD9</option>
+        <option name="number_display_viz.number_display_viz.sparkcolorline">#0178c7</option>
+        <option name="number_display_viz.number_display_viz.sparkcolormodefill">auto</option>
+        <option name="number_display_viz.number_display_viz.sparkcolormodeline">auto</option>
+        <option name="number_display_viz.number_display_viz.sparkmin">0</option>
+        <option name="number_display_viz.number_display_viz.sparknulls">gaps</option>
+        <option name="number_display_viz.number_display_viz.sparkorder">bg</option>
+        <option name="number_display_viz.number_display_viz.sparkstyle">area</option>
+        <option name="number_display_viz.number_display_viz.spinnerspeedmax">20</option>
+        <option name="number_display_viz.number_display_viz.spinnerspeedmin">10</option>
+        <option name="number_display_viz.number_display_viz.style">s0</option>
+        <option name="number_display_viz.number_display_viz.subtitlealign">center</option>
+        <option name="number_display_viz.number_display_viz.subtitlealignv">70</option>
+        <option name="number_display_viz.number_display_viz.subtitlecolor">#5C6773</option>
+        <option name="number_display_viz.number_display_viz.subtitlecolormode">static</option>
+        <option name="number_display_viz.number_display_viz.subtitledrop">yes</option>
+        <option name="number_display_viz.number_display_viz.subtitledropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.subtitlesize">40</option>
+        <option name="number_display_viz.number_display_viz.textalign">center</option>
+        <option name="number_display_viz.number_display_viz.textalignv">50</option>
+        <option name="number_display_viz.number_display_viz.textcolor">#000000</option>
+        <option name="number_display_viz.number_display_viz.textdrop">yes</option>
+        <option name="number_display_viz.number_display_viz.textdropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.textduration">300</option>
+        <option name="number_display_viz.number_display_viz.textmode">static</option>
+        <option name="number_display_viz.number_display_viz.textprecision">1</option>
+        <option name="number_display_viz.number_display_viz.textsize">100</option>
+        <option name="number_display_viz.number_display_viz.textunitposition">after</option>
+        <option name="number_display_viz.number_display_viz.textunitsize">50</option>
+        <option name="number_display_viz.number_display_viz.thickness">50</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol1">#1a9035</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol2">#d16f18</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol3">#b22b32</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol4">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol5">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdcol6">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.thresholdsize">20</option>
+        <option name="number_display_viz.number_display_viz.thresholdval2">70</option>
+        <option name="number_display_viz.number_display_viz.thresholdval3">90</option>
+        <option name="number_display_viz.number_display_viz.titlealign">center</option>
+        <option name="number_display_viz.number_display_viz.titlealignv">30</option>
+        <option name="number_display_viz.number_display_viz.titlecolor">#5C6773</option>
+        <option name="number_display_viz.number_display_viz.titlecolormode">static</option>
+        <option name="number_display_viz.number_display_viz.titledrop">yes</option>
+        <option name="number_display_viz.number_display_viz.titledropcolor">#ffffff</option>
+        <option name="number_display_viz.number_display_viz.titlesize">45</option>
+        <option name="refresh.display">progressbar</option>
+      </viz>
+    </panel>
+  </row>
+</form>

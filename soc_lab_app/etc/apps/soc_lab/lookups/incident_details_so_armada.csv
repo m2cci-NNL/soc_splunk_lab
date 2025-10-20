@@ -1,0 +1,55 @@
+number,"Service Offering","modification_time",name,priority,"short_description",status,"sys_id"
+"ITS-INC6173203",ARMADA,"2021-09-24 09:03:37",,4,"*SD GL L1 - ARMADA access request",Closed,8f1f18eadb1a74908a79a1a0159619fe
+"ITS-INC6180883",ARMADA,"2021-09-12 20:01:24",,2,"ARMADA: Error on treatment/job",Closed,e7f154afdbdef8909061a1a015961923
+"ITS-INC6187442",ARMADA,"2021-09-14 13:03:53",,3,"ARMADA - Study TDU16074 (PROD)  - Web Service issue - Incremental Extraction not possible",Closed,8449cc84db22b4542f4ad7acd39619f2
+"ITS-INC6189388",ARMADA,"2021-09-14 14:00:29",,2,"ARMADA - UAT - VAP00016 - Thread assignment",Closed,0c29950cdbeab0148a79a1a015961919
+"ITS-INC6190679",ARMADA,"2021-09-14 20:01:36",,2,"ARMADA - PROD - GRC00102 - Thread assignment",Closed,99dd9a48dbaa3018857ca1a0159619f4
+"ITS-INC6190726",ARMADA,"2021-09-14 21:00:39",,2,"ARMADA - UAT - TED10893 - Thread assignment",Closed,4b51aa88db6674144b99a1a0159619f5
+"ITS-INC6190727",ARMADA,"2021-09-14 21:00:32",,2,"ARMADA - UAT - TCD11863 - Thread assignment",Closed,3e616ac01b2e3414d0d532a99b4bcbee
+"ITS-INC6190819",ARMADA,"2021-09-15 18:01:33",,4,"ARMADA - study VAP00016 (UAT) - Incremental Extraction not possible",Closed,8f38ae84dbe2bcd03c46a1a0159619a7
+"ITS-INC6192559",ARMADA,"2021-09-15 09:06:19",,3,"ARMADA One Drive Issue",Closed,e2e8c114dbaeb4148a79a1a015961948
+"ITS-INC6193135",ARMADA,"2021-09-15 08:03:26",,4,"ARMADA- study VAP00016(UAT)-Incremental Extraction not possible",Closed,9481611cdb663454ee7da1a015961959
+"ITS-INC6194452",ARMADA,"2021-09-15 14:05:29",,4,"ARMADA- study VAP00016-Incremental Extraction not possible",Closed,ae3f52d0db66b8d0a025d7acd3961947
+"ITS-INC6195735",ARMADA,"2021-09-21 16:03:31",,3,"ARMADA - Study TCD11863(UAT) , TED10893(UAT) - Incremental Extraction not possible",Closed,e5602358db6ef8148a79a1a0159619d5
+"ITS-INC6197406",ARMADA,"2021-09-16 10:04:49",,3,"ARMADA-I cannot see the E2B module in ARMADA-PROD",Closed,a9499a601bee7818c31232a99b4bcbea
+"ITS-INC6198624",ARMADA,"2021-09-16 13:05:27",,2,"ARMADA - UAT - ACT16902 - Thread assignment",Closed,f96d4b6c1baa3c18c31232a99b4bcba1
+"ITS-INC6199236",ARMADA,"2021-09-17 17:00:12",,3,"I cannot connect to Armada Prod/Spectr",Closed,067ea72cdb267458857ca1a0159619a9
+"ITS-INC6199303",ARMADA,"2021-09-17 17:01:07",,3,"i'm not abble to connect to ARMADA PROD via warp. I received a message.",Closed,6f21f3e0dbe67458857ca1a015961981
+"ITS-INC6199506",ARMADA,"2021-09-17 16:01:29",,3,"ARMADA SYSTEM # VAL environement # Not able to connect through WARP portal",Closed,64f83fa4db6e7458857ca1a015961917
+"ITS-INC6200014",ARMADA,"2021-09-16 16:04:37",,2,"ARMADA - PROD - TDU16639 - Thread assignment",Closed,dd1290f0db2674544caea1a015961923
+"ITS-INC6203661",ARMADA,"2021-09-19 09:01:05",,3,"ARMADA - Study TDU16639 - Setup Warning",Closed,dd250181db267098857ca1a01596199a
+"ITS-INC6206889",ARMADA,"2021-09-19 09:00:56",,2,"ARMADA - Error in Treatment/job",Closed,b93c2de9db623c182f4ad7acd39619cb
+"ITS-INC6213595",ARMADA,"2021-09-28 13:02:52",,4,"There is no training request on Race, while still not get Armada access.",Closed,6d4f83861ba2f8d8c31232a99b4bcbf5
+"ITS-INC6217072",ARMADA,"2021-09-21 16:00:17",,2,"ARMADA - UAT - PKM16966-3SA119 - Thread assignment",Closed,08a54ad2dbeab418499aa1a01596190e
+"ITS-INC6217073",ARMADA,"2021-09-22 04:00:44",,2,"ARMADA - UAT - SFILPS16872 - Thread assignment",Closed,34a586dadb2e7418ee7da1a01596192b
+"ITS-INC6218544",ARMADA,"2021-09-22 04:02:29",,2,"ARMADA - PROD - PKM17235 - Thread assignment",Closed,d149d0a2dba678949061a1a01596194f
+"ITS-INC6220065",ARMADA,"2021-09-28 12:00:26",,2,"ARMADA - PROD - ACT16903 - Thread assignment",Closed,091fada61be6f81cc31232a99b4bcbad
+"ITS-INC6232267",ARMADA,"2021-09-26 13:00:11",,3,"ARMADA - Study <ACT16404> - Web Service issue - <error in dataset extraction>.",Closed,371b2adfdb2efc9c857ca1a0159619b6
+"ITS-INC6242209",ARMADA,"2021-09-28 11:01:03",,2,"A2038 | Transaction failed: Citrix connection to ARMADA application failed",Closed,3297f42cdbb630589061a1a0159619a1
+"ITS-INC6242273",ARMADA,"2021-09-28 17:01:27",,3,"XSNW50F071W - ARMADA UAT - FIle Server Not reachable",Closed,727b34a8db32b018a025d7acd396196c
+"ITS-INC6242550",ARMADA,"2021-09-28 12:02:10",,2,"ARMADA - PROD - PKM16966 - Thread assignment",Closed,4cfa0928db3ab018a025d7acd39619c6
+"ITS-INC6247466",ARMADA,"2021-09-29 11:03:59",,2,"ARMADA - UAT - TDU17072 - Thread assignment",Closed,b0efbd70db3af01c499aa1a015961993
+"ITS-INC6250717",ARMADA,"2021-09-30 07:04:21",,2,"ARMADA - UAT - ACT17209 - Thread assignment",Closed,b1484e05dbbab81c499aa1a0159619b1
+"ITS-INC6251656",ARMADA,"2021-09-30 16:01:47",,3,"ARMADA - Error in Treatment/Job",Closed,5ba732851bf67810c31232a99b4bcb23
+"ITS-INC6252547",ARMADA,"2021-09-30 13:00:45",,2,"ARMADA - Error in Treatment/Job",Closed,1f5c1b891bf2b498d0d532a99b4bcb13
+"ITS-INC6254901",ARMADA,"2021-10-01 12:04:56",,3,"ARMADA - Error in Treatment/Job",Closed,ea379ad1db72f858a025d7acd39619aa
+"ITS-INC6255047",ARMADA,"2021-10-01 04:02:21",,2,"ARMADA - PROD - ACT16902 - Thread assignment",Closed,c0a8e2d11b3afc10c31232a99b4bcbc9
+"ITS-INC6256832",ARMADA,"2021-10-01 11:05:07",,2,"ARMADA - PROD - VYF03 - Thread assignment",Closed,e91398e11b72b050c31232a99b4bcb7a
+"ITS-INC6258704",ARMADA,"2021-10-01 21:00:22",,2,"ARMADA - PROD - ACT17010 - Thread assignment",Closed,273b4ee9dbb2709c2f4ad7acd39619ea
+"ITS-INC6260848",ARMADA,"2021-10-03 05:00:19",,2,"ARMADA - PROD - ACT17209 - Thread assignment",Closed,3470d9cadbbab45c4caea1a015961946
+"ITS-INC6262720",ARMADA,"2021-10-04 04:01:56",,2,"ARMADA - PROD - SFILPS16872 - Thread assignment",Closed,b3f91656dbb634d89061a1a0159619bf
+"ITS-INC6263236",ARMADA,"2021-10-04 08:03:06",,2,"ARMADA - UAT - DRI17224 - Thread assignment",Closed,6c1acb1edb767c5cee7da1a015961925
+"ITS-INC6263606",ARMADA,"2021-10-08 16:44:52",,3,"ARMADA_SPECTR_REPORTS_EC_01(check DVS vs SDS) is broken",Cancelled,2e475f961bb6bc50c31232a99b4bcb7a
+"ITS-INC6265293",ARMADA,"2021-10-05 10:00:19",,3,"Not able to open ARMADA tool because of issue in Citrix Receiver.",Closed,09cd9822dbb6b49c499aa1a01596192f
+"ITS-INC6265881",ARMADA,"2021-10-05 17:00:32",,3,"ARMADA - Study OBS15990 - Setup Warning",Closed,18c53ce6dbfef45c3c46a1a015961902
+"ITS-INC6265987",ARMADA,"2021-10-04 18:00:55",,3,"ARMADA - Study ACT16105 - Setup Warning",Closed,4ee97c2edbb2385c3c46a1a015961971
+"ITS-INC6277422",ARMADA,"2021-10-11 13:06:49",,3,"I cannot operate Citrix receiver app, I have to work on Armada on that",Closed,e15c64571bfe74d0c31232a99b4bcbcf
+"ITS-INC6296980",ARMADA,"2021-10-05 14:39:58",,2,"ARMADA - Sanofi.mdsol.com url studies  – Web service issue – datasets not refreshed since XXX mins",Resolved,42a80e701b473c9cd0d532a99b4bcb41
+"ITS-INC6299802",ARMADA,"2021-10-05 14:20:31",,4,"ARMADA Val - TDU17072 - Request for Study Admin",Resolved,3b6351c1db4bb450ee7da1a0159619f4
+"ITS-INC6301524",ARMADA,"2021-10-05 18:07:00",,2,"ARMADA - Error in Treatment/Job",Resolved,c92dde0ddb8f3090499aa1a01596195c
+"ITS-INC6303973",ARMADA,"2021-10-08 16:53:49",,3,"TCD17197 Study not available in _Sanofi URL in ARMADA PROD",Resolved,e65ffd591b03f494c31232a99b4bcb0d
+"ITS-INC6305420",ARMADA,"2021-10-06 14:42:42",,2,"ARMADA - PROD - VAN00008 - Thread assignment",Resolved,b8f34fd1db4b3cdca025d7acd396190c
+"ITS-INC6308304",ARMADA,"2021-10-08 07:06:53",,4,"Failure of armada access for E0490014",Resolved,0b0f3aa1db8774d02f4ad7acd39619bd
+"ITS-INC6315065",ARMADA,"2021-10-08 16:42:52",,3,"ARMADA- study EFC15392-It seems that this Dataset was refreshed a long time ago",Resolved,ccdaa58edb47f4d03c46a1a0159619f8
+"ITS-INC6315072",ARMADA,"2021-10-08 16:38:51",,2,"ARMADA - Error in Treatment/Job",Resolved,f32ba5cadb83301c857ca1a015961969
+"ITS-INC6321516",ARMADA,"2021-10-11 11:48:00",,3,"No access to Citrix ARMADA/ Wise/ EDLB2B - Sites not accessible",Resolved,023e3f761bcff418c31232a99b4bcb0c
