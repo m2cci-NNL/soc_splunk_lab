@@ -16,7 +16,7 @@ jobs:
         run: tar -czf soc_lab_app.tgz soc_lab_app
 
       - name: Copy artifact to remote
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1        
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -44,4 +44,4 @@ jobs:
           HEALTH_TIMEOUT: ${{ secrets.HEALTH_TIMEOUT || '120' }}
           SPLUNK_USERNAME: ${{ secrets.SPLUNK_USERNAME }}
           SPLUNK_PASSWORD: ${{ secrets.SPLUNK_PASSWORD }}
-          
+
