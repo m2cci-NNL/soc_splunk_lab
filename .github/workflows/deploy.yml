@@ -26,6 +26,7 @@ jobs:
           set -e
           sudo mkdir -p "$SPLUNK_HOME/etc/apps/$APP_NAME"
           sudo tar -xzf /tmp/soc_lab_app.tgz -C "$SPLUNK_HOME/etc/apps/$APP_NAME" --strip-components=1
+          sudo find "$SPLUNK_HOME/etc/apps/$APP_NAME" -type f -maxdepth 2 -print | head -n 20
 
       - name: Restart Splunk
         env:
