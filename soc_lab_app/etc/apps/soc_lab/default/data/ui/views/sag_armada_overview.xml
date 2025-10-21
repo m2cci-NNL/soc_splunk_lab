@@ -11,7 +11,7 @@
     <set token="word_infra">Loading...</set>
     <set token="word_db">Loading..</set>
     <set token="word_perf">Loading..</set>
-    <set token="word_itsm">Loading..;</set>
+    <set token="word_itsm">Loading..</set>
   </init>
   <search>
     <query>
