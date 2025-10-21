@@ -32,7 +32,7 @@ jobs:
            SPLUNK_HOME: ${{ secrets.REMOTE_SPLUNK_HOME }} 
         run: |
           sudo chown -R splunk:splunk "$SPLUNK_HOME"
-          sudo chmod 755 "$SPLUNK_HOME/bin/splunk" "$SPLUNK_HOME/bin/splunkd"
+          sudo chmod 755 "$SPLUNK_HOME/bin/splunk"
           sudo find "$SPLUNK_HOME/bin" -maxdepth 1 -type f -exec chmod 755 {} \; || true
 
       - name: Restart Splunk (no systemctl)
