@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 0
 
       # Pack UNIQUEMENT l'app: soc_lab_app/etc/apps/soc_lab
       - name: Pack app
